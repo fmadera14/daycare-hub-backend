@@ -13,8 +13,6 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 
-console.log("Prisma models:", Object.keys(prisma));
-
 app.get("/health", (_, res) => {
   res.send("API funcionando 🚀");
 });
