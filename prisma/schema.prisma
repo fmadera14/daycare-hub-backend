@@ -1,0 +1,331 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model aditional_information {
+  user_id              BigInt  @id
+  secuence_nmbr        Int
+  information_type     String  @db.Char(10)
+  information_value    String  @db.VarChar(50)
+  latitude             String  @db.Char(20)
+  longitude            String  @db.Char(20)
+  prefered_information Boolean
+  users                users   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model admins {
+  user_id       BigInt
+  admin_id      BigInt    @id @default(autoincrement())
+  ocupation_txt String    @db.VarChar(50)
+  nursery_id    BigInt
+  nurseries     nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
+  users         users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model availabilities {
+  availability_id       BigInt                  @id @default(autoincrement())
+  day_available         String                  @db.Char(10)
+  start_hour            DateTime                @db.Time(6)
+  end_hour              DateTime                @db.Time(6)
+  driver_availabilities driver_availabilities[] @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model child_x_nursery {
+  child_id   BigInt
+  nursery_id BigInt
+  children   children  @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
+  nurseries  nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
+
+  @@ignore
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model children {
+  child_id          BigInt            @id @default(autoincrement())
+  first_nm          String            @db.VarChar(50)
+  last_nm           String            @db.VarChar(50)
+  gender            String            @db.Char(1)
+  birth_dt          DateTime          @db.Date
+  active_since_dt   DateTime          @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  children_type_txt String            @db.Char(10)
+  status_cd         String            @db.Char(5)
+  child_x_nursery   child_x_nursery[] @ignore
+  status            status            @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  events            events[]
+  invoices          invoices[]
+  parent_child      parent_child[]    @ignore
+  parent_x_plan     parent_x_plan[]   @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model driver_availabilities {
+  availability_id BigInt
+  user_id         BigInt
+  availabilities  availabilities @relation(fields: [availability_id], references: [availability_id], onDelete: Cascade)
+  users           users          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@ignore
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model drivers {
+  user_id                      BigInt
+  driver_id                    BigInt           @id @default(autoincrement())
+  driver_license_nmbr          String           @db.Char(15)
+  driver_license_expiration_dt DateTime         @db.Date
+  status_cd                    String           @db.Char(5)
+  vehicle_id                   BigInt
+  status                       status           @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  users                        users            @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  vehicles                     vehicles         @relation(fields: [vehicle_id], references: [vehicle_id], onDelete: Cascade)
+  events                       events[]
+  invoices                     invoices[]
+  notifications                notifications[]
+  nursery_driver               nursery_driver[] @ignore
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model event_types {
+  event_type_id BigInt   @id @default(autoincrement())
+  name          String   @db.Char(10)
+  events        events[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model events {
+  event_id      BigInt          @id @default(autoincrement())
+  event_dt      DateTime        @db.Timestamp(6)
+  event_type_id BigInt
+  child_id      BigInt
+  driver_id     BigInt
+  nursery_id    BigInt
+  children      children        @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
+  drivers       drivers         @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
+  event_types   event_types     @relation(fields: [event_type_id], references: [event_type_id], onDelete: Cascade)
+  nurseries     nurseries       @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
+  notifications notifications[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model invoices {
+  invoice_id         BigInt     @id @default(autoincrement())
+  invoice_number     String     @db.Char(20)
+  invoice_total_amt  Decimal    @db.Decimal(10, 2)
+  invoice_due_amt    Decimal    @db.Decimal(10, 2)
+  issue_dt           DateTime   @db.Date
+  due_dt             DateTime   @db.Date
+  payment_status_txt String     @db.Char(10)
+  nursery_id         BigInt
+  driver_id          BigInt
+  parent_id          BigInt
+  child_id           BigInt
+  plan_id            BigInt
+  children           children   @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
+  drivers            drivers    @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
+  nurseries          nurseries  @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
+  parents            parents    @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
+  plan               plan       @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade)
+  payments           payments[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model notification_settings {
+  notification_setting_id        BigInt                           @id @default(autoincrement())
+  notification_setting_desc      String                           @db.VarChar(50)
+  parent_x_notification_settings parent_x_notification_settings[] @ignore
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model notifications {
+  notification_id      BigInt   @id @default(autoincrement())
+  notification_message String   @db.VarChar(255)
+  notification_dt      DateTime @db.Timestamp(6)
+  notification_sent    Boolean
+  parent_id            BigInt
+  event_id             BigInt
+  driver_id            BigInt
+  notification_via     String   @db.Char(10)
+  drivers              drivers  @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
+  events               events   @relation(fields: [event_id], references: [event_id], onDelete: Cascade)
+  parents              parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model nurseries {
+  user_id         BigInt
+  nursery_id      BigInt            @id @default(autoincrement())
+  nursery_nm      String            @db.VarChar(50)
+  address_txt     String            @db.VarChar(255)
+  open_since_dt   DateTime          @db.Date
+  status_cd       String?           @db.Char(5)
+  admins          admins[]
+  child_x_nursery child_x_nursery[] @ignore
+  events          events[]
+  invoices        invoices[]
+  status          status?           @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  users           users             @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  nursery_driver  nursery_driver[]  @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model nursery_driver {
+  driver_id          BigInt
+  nursery_id         BigInt
+  postulation_date   DateTime  @db.Date
+  postulation_status String    @db.Char(10)
+  drivers            drivers   @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
+  nurseries          nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model parent_child {
+  user_id           BigInt
+  child_id          BigInt
+  relationship_type String   @db.Char(10)
+  children          children @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
+  users             users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model parent_x_notification_settings {
+  parent_id               BigInt
+  notification_setting_id BigInt
+  notification_settings   notification_settings @relation(fields: [notification_setting_id], references: [notification_setting_id], onDelete: Cascade)
+  parents                 parents               @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model parent_x_plan {
+  parent_id BigInt
+  plan_id   BigInt
+  child_id  BigInt
+  children  children @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
+  parents   parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
+  plan      plan     @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade)
+
+  @@ignore
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model parents {
+  user_id                        BigInt
+  parent_id                      BigInt                           @id @default(autoincrement())
+  ocupation_txt                  String                           @db.VarChar(50)
+  aproximate_income_amt          Decimal                          @db.Decimal(10, 2)
+  children_amt                   Int                              @default(1)
+  status_cd                      String                           @db.Char(5)
+  invoices                       invoices[]
+  notifications                  notifications[]
+  parent_x_notification_settings parent_x_notification_settings[] @ignore
+  parent_x_plan                  parent_x_plan[]                  @ignore
+  status                         status                           @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  users                          users                            @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  payments                       payments[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model payments {
+  payment_id         BigInt   @id @default(autoincrement())
+  payment_amt        Decimal  @db.Decimal(10, 2)
+  payment_method     String   @db.Char(10)
+  payment_status_txt String   @db.Char(10)
+  parent_id          BigInt
+  invoice_id         BigInt
+  invoices           invoices @relation(fields: [invoice_id], references: [invoice_id], onDelete: Cascade)
+  parents            parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model plan {
+  plan_id           BigInt          @id @default(autoincrement())
+  day_due           Int
+  plan_desc         String          @db.VarChar(50)
+  late_fee          Decimal         @db.Decimal(10, 2)
+  plan_requisite_id BigInt
+  status_cd         String          @db.Char(5)
+  invoices          invoices[]
+  parent_x_plan     parent_x_plan[] @ignore
+  plan_requisite    plan_requisite  @relation(fields: [plan_requisite_id], references: [plan_requisite_id], onDelete: Cascade)
+  status            status          @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model plan_requisite {
+  plan_requisite_id BigInt @id @default(autoincrement())
+  requisite_txt     String @db.VarChar(50)
+  plan              plan[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model status {
+  status_cd   String      @id @db.Char(5)
+  status_desc String      @db.Char(10)
+  children    children[]
+  drivers     drivers[]
+  nurseries   nurseries[]
+  parents     parents[]
+  plan        plan[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users {
+  user_id               BigInt                  @id @default(autoincrement())
+  first_nm              String                  @db.VarChar(50)
+  last_nm               String                  @db.VarChar(50)
+  documentation_type    String                  @db.Char(5)
+  documentation_id      String                  @db.Char(15)
+  gender                String                  @db.Bit(1)
+  birth_dt              DateTime                @db.Date
+  active_since          DateTime                @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  last_login            DateTime                @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  password              String                  @db.VarChar
+  username              String                  @db.VarChar
+  aditional_information aditional_information?
+  admins                admins[]
+  driver_availabilities driver_availabilities[] @ignore
+  drivers               drivers[]
+  nurseries             nurseries[]
+  parent_child          parent_child[]          @ignore
+  parents               parents[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model vehicle_types {
+  vehicle_type_id BigInt     @id @default(autoincrement())
+  type_name       String     @db.Char(10)
+  vehicles        vehicles[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model vehicles {
+  vehicle_id        BigInt        @id @default(autoincrement())
+  vehicle_brand     String        @db.VarChar(50)
+  vehicle_nm        String        @db.VarChar(50)
+  year              String        @db.Char(4)
+  color             String        @db.Char(10)
+  registration_nmbr String        @db.Char(15)
+  vehicle_type_id   BigInt
+  drivers           drivers[]
+  vehicle_types     vehicle_types @relation(fields: [vehicle_type_id], references: [vehicle_type_id], onDelete: Cascade)
+}

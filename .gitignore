@@ -1,0 +1,40 @@
+# =========================
+# Node.js
+# =========================
+node_modules/
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Prisma
+# =========================
+# Prisma client (generated)
+node_modules/.prisma/
+
+# =========================
+# Build / Output
+# =========================
+dist/
+build/
+coverage/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Temporary files
+# =========================
+tmp/
+temp/
