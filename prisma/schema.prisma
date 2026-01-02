@@ -300,7 +300,7 @@ model users {
   active_since          DateTime                @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
   last_login            DateTime                @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
   password              String                  @db.VarChar
-  username              String                  @db.VarChar
+  username              String                  @unique @db.VarChar
   aditional_information aditional_information?
   admins                admins[]
   driver_availabilities driver_availabilities[] @ignore
