@@ -20,15 +20,87 @@ El proyecto expone una API REST y utiliza Prisma únicamente como **cliente ORM*
 
 ```text
 
-backend/
-├── prisma/
-│ └── schema.prisma
-├── src/
-│ └── prisma.js
-├── index.js
-├── package.json
-├── .env.example
-└── README.md
+src/
+│
+├── app.js                 # Inicialización de Express
+├── server.js              # Arranque del servidor HTTP / Socket.IO
+│
+├── config/                # Configuración global
+│   ├── env.js
+│   ├── database.js
+│   ├── redis.js
+│   └── socket.js
+│
+├── routes/                # Definición de endpoints REST
+│   ├── auth.routes.js
+│   ├── users.routes.js
+│   ├── students.routes.js
+│   ├── routes.routes.js
+│   ├── payments.routes.js
+│   └── notifications.routes.js
+│
+├── controllers/           # CAPA DE PRESENTACIÓN
+│   ├── auth.controller.js
+│   ├── users.controller.js
+│   ├── students.controller.js
+│   ├── routes.controller.js
+│   └── payments.controller.js
+│
+├── services/              # CAPA DE APLICACIÓN
+│   ├── auth.service.js
+│   ├── user.service.js
+│   ├── student.service.js
+│   ├── route.service.js
+│   ├── payment.service.js
+│   └── notification.service.js
+│
+├── domain/                # CAPA DE DOMINIO
+│   ├── entities/
+│   │   ├── User.js
+│   │   ├── Student.js
+│   │   ├── Route.js
+│   │   └── Payment.js
+│   │
+│   ├── enums/
+│   │   ├── roles.enum.js
+│   │   └── paymentStatus.enum.js
+│   │
+│   └── rules/
+│       ├── payment.rules.js
+│       └── attendance.rules.js
+│
+├── repositories/          # CAPA DE INFRAESTRUCTURA (Persistencia)
+│   ├── user.repository.js
+│   ├── student.repository.js
+│   ├── route.repository.js
+│   └── payment.repository.js
+│
+├── integrations/          # CAPA DE INFRAESTRUCTURA (Externos)
+│   ├── payment.gateway.js
+│   ├── fcm.provider.js
+│   ├── maps.provider.js
+│   └── storage.provider.js
+│
+├── middlewares/           # Cross-cutting concerns
+│   ├── auth.middleware.js
+│   ├── role.middleware.js
+│   ├── error.middleware.js
+│   └── validation.middleware.js
+│
+├── sockets/               # Tiempo real (Socket.IO)
+│   ├── socket.handler.js
+│   └── events/
+│       ├── route.events.js
+│       └── attendance.events.js
+│
+├── utils/                 # Utilidades generales
+│   ├── logger.js
+│   ├── jwt.js
+│   └── crypto.js
+│
+└── docs/
+    └── openapi.yaml       # Swagger
+
 ```
 
 ---
