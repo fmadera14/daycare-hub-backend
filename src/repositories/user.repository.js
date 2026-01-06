@@ -10,4 +10,8 @@ export const userRepository = {
   create(data) {
     return prisma.users.create({ data });
   },
+
+  listUsers() {
+    return prisma.users.findMany();
+  },
 };
