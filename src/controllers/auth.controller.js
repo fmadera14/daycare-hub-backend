@@ -22,4 +22,45 @@ export const authController = {
       next(err);
     }
   },
+
+  async recoveryPassword(req, res, next) {
+    try {
+      const { username } = req.body;
+
+      if (!username) {
+        return res.status(400).json({
+          message: "Username requerido",
+        });
+      }
+
+      const result = await authService.recoveryPassword(username);
+
+      res.json({
+        message: "Proceso de recuperación iniciado",
+        ...result,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async resetPassword(req, res, next) {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        return res.status(400).json({
+          message: "Token y nueva contraseña requeridos",
+        });
+      }
+
+      await authService.resetPassword(token, newPassword);
+
+      res.json({
+        message: "Contraseña actualizada correctamente",
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

@@ -14,4 +14,11 @@ export const userRepository = {
   listUsers() {
     return prisma.users.findMany();
   },
+
+  updatePassword(userId, password) {
+    return prisma.users.update({
+      where: { user_id: userId },
+      data: { password },
+    });
+  },
 };

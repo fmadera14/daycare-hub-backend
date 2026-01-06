@@ -9,6 +9,17 @@ export function errorMiddleware(err, req, res, next) {
     return res.status(409).json({ message: "Username ya existe" });
   }
 
+  if (err.message === "USER_NOT_FOUND") {
+    return res.status(404).json({ message: "Usuario no encontrado" });
+  }
+
+  if (
+    err.message === "INVALID_OR_EXPIRED_TOKEN" ||
+    err.message === "INVALID_TOKEN_TYPE"
+  ) {
+    return res.status(400).json({ message: "Token inválido o expirado" });
+  }
+
   res.status(500).json({
     message: "Error interno del servidor",
   });
