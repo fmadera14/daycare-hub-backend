@@ -1,6 +1,6 @@
 {
-  "watch": ["index.js", "src", "routes"],
+  "watch": ["src/server.js", "src", "routes"],
   "ext": "js,json",
   "ignore": ["node_modules", "prisma"],
-  "exec": "node index.js"
+  "exec": "node src/server.js"
 }

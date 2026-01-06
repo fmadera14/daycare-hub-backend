@@ -28,7 +28,6 @@ src/
 ├── config/                # Configuración global
 │   ├── env.js
 │   ├── database.js
-│   ├── redis.js
 │   └── socket.js
 │
 ├── routes/                # Definición de endpoints REST
@@ -93,13 +92,10 @@ src/
 │       ├── route.events.js
 │       └── attendance.events.js
 │
-├── utils/                 # Utilidades generales
-│   ├── logger.js
-│   ├── jwt.js
-│   └── crypto.js
-│
-└── docs/
-    └── openapi.yaml       # Swagger
+└── utils/                 # Utilidades generales
+    ├── logger.js
+    ├── jwt.js
+    └── crypto.js
 
 ```
 

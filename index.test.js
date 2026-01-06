@@ -9,7 +9,7 @@ const mockPrisma = {
   },
 };
 
-jest.unstable_mockModule("./src/lib/prisma.js", () => ({
+jest.unstable_mockModule("./src/config/prisma.js", () => ({
   prisma: mockPrisma,
 }));
 
