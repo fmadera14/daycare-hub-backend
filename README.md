@@ -182,6 +182,28 @@ npm run studio
 
 ---
 
+## Tests
+
+This test suite covers the main functionality of the Express API.
+
+```bash
+npm test
+```
+
+### Test Framework
+
+- **Jest**: Test framework
+- **Supertest**: HTTP assertion library for testing Express endpoints
+- **ES Modules**: Tests use ES module syntax with Jest's experimental VM modules support
+
+### Notas de los tests
+
+- The Prisma client is mocked in tests to avoid database dependencies
+- The BigInt.prototype.toJSON override is applied in the test file to match production behavior
+- Error console output during tests is expected for the error handling test case
+
+---
+
 ## 🧠 Notas importantes
 
 - Los campos `BIGINT` se serializan automáticamente como `string` en las respuestas JSON.
