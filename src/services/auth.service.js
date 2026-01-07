@@ -5,6 +5,7 @@ import { parentRepository } from "../repositories/parent.repository.js";
 import { prisma } from "../config/prisma.js";
 import { driverRepository } from "../repositories/driver.repository.js";
 import { adminRepository } from "../repositories/admin.repository.js";
+import { JWT_SECRET } from "../config/env.js";
 
 const { sign, verify } = pkg;
 
@@ -128,7 +129,7 @@ export const authService = {
         userId: user.user_id.toString(),
         type: "PASSWORD_RECOVERY",
       },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       { expiresIn: "15m" }
     );
 
@@ -141,7 +142,7 @@ export const authService = {
     let payload;
 
     try {
-      payload = verify(token, process.env.JWT_SECRET);
+      payload = verify(token, JWT_SECRET);
     } catch {
       throw new Error("INVALID_OR_EXPIRED_TOKEN");
     }
