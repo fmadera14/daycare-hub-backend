@@ -5,6 +5,7 @@ import pkg from "jsonwebtoken";
 import { parentRepository } from "../repositories/parent.repository.js";
 import { prisma } from "../config/prisma.js";
 import { driverRepository } from "../repositories/driver.repository.js";
+import { adminRepository } from "../repositories/admin.repository.js";
 
 const { sign, verify } = pkg;
 
@@ -84,7 +85,15 @@ export const authService = {
           break;
 
         case "admin":
-          throw new Error("ADMIN");
+          await adminRepository.create(
+            {
+              user_id: user.user_id,
+              ocupation_txt: data.ocupation_txt,
+              nursery_id: data.nursery_id,
+            },
+            tx
+          );
+          break;
 
         default:
           throw new Error("INVALID_ROLE");
