@@ -5,17 +5,20 @@ This test suite covers the main functionality of the Express API.
 ## Test Coverage
 
 ### 1. Health Endpoint Test
+
 - **Test**: `/health` endpoint returns successful status and correct message
 - **Validates**: The health check endpoint returns a 200 status and the message "API funcionando 🚀"
 
 ### 2. Users Endpoint Success Test
+
 - **Test**: `/users` endpoint successfully retrieves and returns users
-- **Validates**: 
+- **Validates**:
   - The endpoint returns a 200 status
   - The response contains the expected user data
   - The Prisma `findMany` method is called exactly once
 
 ### 3. Users Endpoint Error Handling Test
+
 - **Test**: `/users` endpoint handles database errors
 - **Validates**:
   - When the database throws an error, the endpoint returns a 500 status
@@ -23,6 +26,7 @@ This test suite covers the main functionality of the Express API.
   - The error is properly caught and handled
 
 ### 4. BigInt Serialization Test
+
 - **Test**: BigInt values are correctly serialized to strings
 - **Validates**:
   - BigInt values in the response are converted to strings
