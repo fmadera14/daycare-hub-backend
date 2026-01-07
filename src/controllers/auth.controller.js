@@ -5,7 +5,14 @@ export const authController = {
   async login(req, res, next) {
     try {
       const { username, password } = req.body;
-      const token = await authService.login(username, password);
+      const { user, role } = await authService.login(username, password);
+
+      const token = generateToken({
+        userId: user.user_id.toString(),
+        username: user.username,
+        role: role,
+      });
+
       res.json({ token });
     } catch (err) {
       next(err);

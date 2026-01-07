@@ -19,7 +19,7 @@ model aditional_information {
 }
 
 model admins {
-  user_id       BigInt
+  user_id       BigInt    @unique
   admin_id      BigInt    @id @default(autoincrement())
   ocupation_txt String    @db.VarChar(50)
   nursery_id    BigInt
@@ -74,7 +74,7 @@ model driver_availabilities {
 }
 
 model drivers {
-  user_id                      BigInt
+  user_id                      BigInt   @unique
   driver_id                    BigInt   @id @default(autoincrement())
   driver_license_nmbr          String   @db.Char(15)
   driver_license_expiration_dt DateTime @db.Date
@@ -222,7 +222,7 @@ model parent_x_plan {
 }
 
 model parents {
-  user_id               BigInt
+  user_id               BigInt   @unique
   parent_id             BigInt   @id @default(autoincrement())
   ocupation_txt         String   @db.VarChar(50)
   aproximate_income_amt Decimal  @db.Decimal(10, 2)

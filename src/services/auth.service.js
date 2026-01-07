@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import { userRepository } from "../repositories/user.repository.js";
-import { generateToken } from "../utils/jwt.js";
 import pkg from "jsonwebtoken";
 import { parentRepository } from "../repositories/parent.repository.js";
 import { prisma } from "../config/prisma.js";
@@ -23,9 +22,23 @@ export const authService = {
       throw new Error("INVALID_CREDENTIALS");
     }
 
-    return generateToken({
-      userId: user.user_id.toString(),
-      username: user.username,
+    return prisma.$transaction(async (tx) => {
+      const parent = await parentRepository.findByUserId(user.user_id, tx);
+      if (parent) {
+        return { user, role: "parent" };
+      }
+
+      const driver = await driverRepository.findByUserId(user.user_id, tx);
+      if (driver) {
+        return { user, role: "driver" };
+      }
+
+      const admin = await adminRepository.findByUserId(user.user_id, tx);
+      if (admin) {
+        return { user, role: "admin" };
+      }
+
+      throw new Error("NO_ROLE");
     });
   },
 
