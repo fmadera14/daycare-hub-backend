@@ -11,7 +11,7 @@ El proyecto expone una API REST y utiliza Prisma únicamente como **cliente ORM*
 - Node.js
 - Express.js
 - Prisma ORM
-- PostgreSQL
+- Supabase
 - JavaScript (ES Modules)
 
 ---
