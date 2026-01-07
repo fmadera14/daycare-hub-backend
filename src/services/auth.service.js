@@ -4,6 +4,7 @@ import { generateToken } from "../utils/jwt.js";
 import pkg from "jsonwebtoken";
 import { parentRepository } from "../repositories/parent.repository.js";
 import { prisma } from "../config/prisma.js";
+import { driverRepository } from "../repositories/driver.repository.js";
 
 const { sign, verify } = pkg;
 
@@ -68,7 +69,19 @@ export const authService = {
           break;
 
         case "driver":
-          throw new Error("DRIVER");
+          await driverRepository.create(
+            {
+              user_id: user.user_id,
+              driver_license_nmbr: data.driver_license_nmbr,
+              driver_license_expiration_dt: new Date(
+                data.driver_license_expiration_dt
+              ),
+              status_cd: data.status_cd,
+              vehicle_id: data.vehicle_id,
+            },
+            tx
+          );
+          break;
 
         case "admin":
           throw new Error("ADMIN");
