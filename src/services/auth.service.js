@@ -1,7 +1,11 @@
 import bcrypt from "bcrypt";
 import { userRepository } from "../repositories/user.repository.js";
 import { generateToken } from "../utils/jwt.js";
-import { sign, verify } from "jsonwebtoken";
+import pkg from "jsonwebtoken";
+import { parentRepository } from "../repositories/parent.repository.js";
+import { prisma } from "../config/prisma.js";
+
+const { sign, verify } = pkg;
 
 export const authService = {
   async login(username, password) {
@@ -32,15 +36,48 @@ export const authService = {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user = await userRepository.create({
-      ...data,
-      password: hashedPassword,
-      birth_dt: new Date(data.birth_dt),
-    });
+    return prisma.$transaction(async (tx) => {
+      // 1️⃣ crear usuario
+      const user = await userRepository.create(
+        {
+          username: data.username,
+          password: hashedPassword,
+          first_nm: data.first_nm,
+          last_nm: data.last_nm,
+          documentation_type: data.documentation_type,
+          documentation_id: data.documentation_id,
+          gender: data.gender,
+          birth_dt: new Date(data.birth_dt),
+        },
+        tx // 👈 prisma transaction
+      );
 
-    return generateToken({
-      userId: user.user_id.toString(),
-      username: user.username,
+      // 2️⃣ crear rol
+      switch (data.role) {
+        case "parent":
+          await parentRepository.create(
+            {
+              user_id: user.user_id,
+              ocupation_txt: data.ocupation_txt,
+              aproximate_income_amt: data.aproximate_income_amt,
+              children_amt: data.children_amt,
+              status_cd: data.status_cd,
+            },
+            tx
+          );
+          break;
+
+        case "driver":
+          throw new Error("DRIVER");
+
+        case "admin":
+          throw new Error("ADMIN");
+
+        default:
+          throw new Error("INVALID_ROLE");
+      }
+
+      return user;
     });
   },
 

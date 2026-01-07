@@ -7,8 +7,8 @@ export const userRepository = {
     });
   },
 
-  create(data) {
-    return prisma.users.create({ data });
+  create(data, prismaClient = prisma) {
+    return prismaClient.users.create({ data });
   },
 
   listUsers() {

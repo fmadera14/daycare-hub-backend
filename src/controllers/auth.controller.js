@@ -1,4 +1,5 @@
 import { authService } from "../services/auth.service.js";
+import { generateToken } from "../utils/jwt.js";
 
 export const authController = {
   async login(req, res, next) {
@@ -13,7 +14,14 @@ export const authController = {
 
   async register(req, res, next) {
     try {
-      const token = await authService.register(req.body);
+      const user = await authService.register(req.body);
+
+      const token = generateToken({
+        userId: user.user_id.toString(),
+        username: user.username,
+        role: req.body.role,
+      });
+
       res.status(201).json({
         message: "Usuario creado correctamente",
         token,
