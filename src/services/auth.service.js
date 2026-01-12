@@ -51,7 +51,7 @@ export const authService = {
     const existing = await userRepository.findByUsername(data.username);
 
     if (existing) {
-      throw new Error("USERNAME_EXISTS");
+      throw { code: "USERNAME_EXISTS" };
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -114,7 +114,7 @@ export const authService = {
           break;
 
         default:
-          throw new Error("INVALID_ROLE");
+          throw { code: "INVALID_ROLE" };
       }
 
       return user;
@@ -125,7 +125,7 @@ export const authService = {
     const user = await userRepository.findByUsername(username);
 
     if (!user) {
-      throw new Error("USER_NOT_FOUND");
+      throw { code: "USER_NOT_FOUND" };
     }
 
     const token = sign(
@@ -148,11 +148,11 @@ export const authService = {
     try {
       payload = verify(token, JWT_SECRET);
     } catch {
-      throw new Error("INVALID_OR_EXPIRED_TOKEN");
+      throw { code: "INVALID_OR_EXPIRED_TOKEN" };
     }
 
     if (payload.type !== "PASSWORD_RECOVERY") {
-      throw new Error("INVALID_TOKEN_TYPE");
+      throw { code: "INVALID_TOKEN_TYPE" };
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

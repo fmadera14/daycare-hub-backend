@@ -43,9 +43,7 @@ export const authController = {
       const { username } = req.body;
 
       if (!username) {
-        return res.status(400).json({
-          message: "Username requerido",
-        });
+        throw { code: "MISSING_CREDENTIALS" };
       }
 
       const result = await authService.recoveryPassword(username);
@@ -64,9 +62,7 @@ export const authController = {
       const { token, newPassword } = req.body;
 
       if (!token || !newPassword) {
-        return res.status(400).json({
-          message: "Token y nueva contraseña requeridos",
-        });
+        throw { code: "RESET_PASSWORD_MISSING_PARAMS" };
       }
 
       await authService.resetPassword(token, newPassword);

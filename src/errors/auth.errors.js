@@ -23,4 +23,9 @@ export const AUTH_ERRORS = {
     status: 400,
     message: "Faltan credenciales",
   },
+
+  RESET_PASSWORD_MISSING_PARAMS: {
+    status: 400,
+    message: "Token y nueva contraseña requeridos",
+  },
 };
