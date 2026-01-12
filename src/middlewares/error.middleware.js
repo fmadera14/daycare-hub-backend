@@ -20,6 +20,12 @@ export function errorMiddleware(err, req, res, next) {
     return res.status(400).json({ message: "Token inválido o expirado" });
   }
 
+  if (err.code === "ETIMEDOUT") {
+    return res.status(503).json({
+      message: "Base de datos no disponible, intente más tarde",
+    });
+  }
+
   res.status(500).json({
     message: "Error interno del servidor",
   });
