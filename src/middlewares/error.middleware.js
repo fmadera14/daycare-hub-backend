@@ -1,32 +1,23 @@
+import { errorMap } from "../errors/error.map.js";
+
 export function errorMiddleware(err, req, res, next) {
   console.error(err);
 
-  if (err.message === "INVALID_CREDENTIALS") {
-    return res.status(401).json({ message: "Credenciales inválidas" });
-  }
-
-  if (err.message === "USERNAME_EXISTS") {
-    return res.status(409).json({ message: "Username ya existe" });
-  }
-
-  if (err.message === "USER_NOT_FOUND") {
-    return res.status(404).json({ message: "Usuario no encontrado" });
-  }
-
-  if (
-    err.message === "INVALID_OR_EXPIRED_TOKEN" ||
-    err.message === "INVALID_TOKEN_TYPE"
-  ) {
-    return res.status(400).json({ message: "Token inválido o expirado" });
-  }
-
+  // Prisma timeout directo
   if (err.code === "ETIMEDOUT") {
-    return res.status(503).json({
-      message: "Base de datos no disponible, intente más tarde",
-    });
+    const mapped = errorMap.DATABASE_UNAVAILABLE;
+    return res.status(mapped.status).json({ message: mapped.message });
   }
 
-  res.status(500).json({
+  // Mapeo por mensaje (compatibilidad con tu código actual)
+  const key = err.code || err.message;
+  const mapped = errorMap[key];
+
+  if (mapped) {
+    return res.status(mapped.status).json({ message: mapped.message });
+  }
+
+  return res.status(500).json({
     message: "Error interno del servidor",
   });
 }

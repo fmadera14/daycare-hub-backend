@@ -11,16 +11,20 @@ const { sign, verify } = pkg;
 
 export const authService = {
   async login(username, password) {
+    if (!username || !password) {
+      throw { code: "MISSING_CREDENTIALS" };
+    }
+
     const user = await userRepository.findByUsername(username);
 
     if (!user) {
-      throw new Error("INVALID_CREDENTIALS");
+      throw { code: "INVALID_CREDENTIALS" };
     }
 
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      throw new Error("INVALID_CREDENTIALS");
+      throw { code: "INVALID_CREDENTIALS" };
     }
 
     return prisma.$transaction(async (tx) => {
@@ -39,7 +43,7 @@ export const authService = {
         return { user, role: "admin" };
       }
 
-      throw new Error("NO_ROLE");
+      throw { code: "NO_ROLE" };
     });
   },
 
