@@ -16,13 +16,13 @@ const router = Router();
  *           schema:
  *             type: object
  *             required:
- *               - email
+ *               - username
  *               - password
  *             properties:
- *               email:
+ *               username:
  *                 type: string
- *                 format: email
- *                 example: usuario@ejemplo.com
+ *                 format: text
+ *                 example: username
  *               password:
  *                 type: string
  *                 format: password
