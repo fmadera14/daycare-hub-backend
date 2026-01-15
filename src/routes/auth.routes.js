@@ -311,6 +311,8 @@ router.post("/register/admin", (req, res, next) => {
   authController.register(req, res, next);
 });
 
+router.put("/profile", authController.updateProfile);
+
 /**
  * @swagger
  * /auth/recovery-password:
