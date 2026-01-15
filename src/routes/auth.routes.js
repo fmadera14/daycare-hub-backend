@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { authController } from "../controllers/auth.controller.js";
 
+const injectRole = (role) => (req, _, next) => {
+  req.body.role = role;
+  next();
+};
+
 const router = Router();
 
 /**
@@ -131,10 +136,7 @@ router.post("/login", authController.login);
  *       500:
  *         description: Error interno del servidor
  */
-router.post("/register/parent", (req, res, next) => {
-  req.body.role = "parent";
-  authController.register(req, res, next);
-});
+router.post("/register/parent", injectRole("parent"), authController.register);
 
 /**
  * @swagger
@@ -223,10 +225,7 @@ router.post("/register/parent", (req, res, next) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.post("/register/driver", (req, res, next) => {
-  req.body.role = "driver";
-  authController.register(req, res, next);
-});
+router.post("/register/driver", injectRole("driver"), authController.register);
 
 /**
  * @swagger
@@ -306,10 +305,7 @@ router.post("/register/driver", (req, res, next) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.post("/register/admin", (req, res, next) => {
-  req.body.role = "admin";
-  authController.register(req, res, next);
-});
+router.post("/register/admin", injectRole("admin"), authController.register);
 
 router.put("/profile", authController.updateProfile);
 

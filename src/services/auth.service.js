@@ -121,6 +121,8 @@ export const authService = {
     });
   },
 
+  async updateProfile(data) {},
+
   async recoveryPassword(username) {
     const user = await userRepository.findByUsername(username);
 
