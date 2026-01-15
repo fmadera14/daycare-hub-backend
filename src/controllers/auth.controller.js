@@ -38,19 +38,6 @@ export const authController = {
     }
   },
 
-  async updateProfile(req, res, next) {
-    try {
-      const updatedUser = await authService.updateProfile(req.body);
-
-      res.status(200).json({
-        message: "Usuario editado correctamente",
-        updatedUser,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-
   async recoveryPassword(req, res, next) {
     try {
       const { username } = req.body;

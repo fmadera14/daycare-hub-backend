@@ -9,4 +9,20 @@ export const userController = {
       next(error);
     }
   },
+
+  async updateProfile(req, res, next) {
+    try {
+      const updatedUser = await userService.updateProfile(
+        req.user.userId,
+        req.body
+      );
+
+      res.status(200).json({
+        message: "Usuario editado correctamente",
+        updatedUser,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

@@ -38,4 +38,39 @@ export const userService = {
       })
     );
   },
+
+  async updateProfile(userId, data) {
+    if (!userId) {
+      throw { code: "USER_ID_REQUIRED" };
+    }
+
+    const userIdInt = BigInt(userId);
+
+    const existingUser = await userRepository.findById(userIdInt);
+
+    if (!existingUser) {
+      throw { code: "USER_NOT_FOUND" };
+    }
+
+    const updateData = {};
+
+    if (data.firstNm) updateData.first_nm = data.firstNm;
+    if (data.lastNm) updateData.last_nm = data.lastNm;
+    if (data.gender) updateData.gender = data.gender;
+    if (data.documentationType)
+      updateData.documentation_type = data.documentationType;
+    if (data.documentationId)
+      updateData.documentation_id = data.documentationId;
+    if (data.birthDt) updateData.birth_dt = new Date(data.birthDt);
+
+    // ❌ Nada que actualizar
+    if (Object.keys(updateData).length === 0) {
+      throw { code: "NO_FIELDS_TO_UPDATE" };
+    }
+
+    // 💾 Update
+    const updatedUser = await userRepository.update(userIdInt, updateData);
+
+    return updatedUser;
+  },
 };

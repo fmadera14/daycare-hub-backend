@@ -33,4 +33,6 @@ const router = Router();
  */
 router.get("/", authMiddleware, userController.listUsers);
 
+router.put("/", authMiddleware, userController.updateProfile);
+
 export default router;

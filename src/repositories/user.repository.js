@@ -51,4 +51,24 @@ export const userRepository = {
       data: { password },
     });
   },
+
+  findById(id) {
+    return prisma.users.findUnique({ where: { user_id: id } });
+  },
+
+  update(userId, updateData) {
+    const allowedFields = {
+      first_nm: updateData.first_nm,
+      last_nm: updateData.last_nm,
+      documentation_type: updateData.documentation_type,
+      documentation_id: updateData.documentation_id,
+      gender: updateData.gender,
+      birth_dt: updateData.birth_dt ? new Date(updateData.birth_dt) : undefined,
+    };
+
+    return prisma.users.update({
+      where: { user_id: userId },
+      data: allowedFields,
+    });
+  },
 };

@@ -307,8 +307,6 @@ router.post("/register/driver", injectRole("driver"), authController.register);
  */
 router.post("/register/admin", injectRole("admin"), authController.register);
 
-router.put("/profile", authController.updateProfile);
-
 /**
  * @swagger
  * /auth/recovery-password:
