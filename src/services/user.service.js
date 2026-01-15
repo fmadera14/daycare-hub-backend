@@ -34,7 +34,7 @@ export const userService = {
             role: "admin",
           };
 
-        return { ...user };
+        return { ...user, role: "no role" };
       })
     );
   },
