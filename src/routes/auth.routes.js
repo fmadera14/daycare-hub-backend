@@ -46,42 +46,6 @@ router.post("/login", authController.login);
 
 /**
  * @swagger
- * /auth/register:
- *   post:
- *     summary: Registrar un nuevo usuario
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *               - name
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *                 example: nuevo@ejemplo.com
- *               password:
- *                 type: string
- *                 format: password
- *                 example: password123
- *               name:
- *                 type: string
- *                 example: Juan Pérez
- *     responses:
- *       201:
- *         description: Usuario registrado exitosamente
- *       400:
- *         description: Datos inválidos o usuario ya existe
- */
-router.post("/register", authController.register);
-
-/**
- * @swagger
  * /auth/register/parent:
  *   post:
  *     summary: Registrar un nuevo usuario con rol Padre
@@ -169,6 +133,98 @@ router.post("/register", authController.register);
  */
 router.post("/register/parent", (req, res, next) => {
   req.body.role = "parent";
+  authController.register(req, res, next);
+});
+
+/**
+ * @swagger
+ * /auth/register/driver:
+ *   post:
+ *     summary: Registrar un nuevo usuario con rol Driver
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - first_nm
+ *               - last_nm
+ *               - documentation_type
+ *               - documentation_id
+ *               - gender
+ *               - birth_dt
+ *               - driver_license_nmbr
+ *               - driver_license_expiration_dt
+ *               - status_cd
+ *               - vehicle_id
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: testusername3
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "12345678"
+ *               first_nm:
+ *                 type: string
+ *                 example: Test
+ *               last_nm:
+ *                 type: string
+ *                 example: DRIVER
+ *               documentation_type:
+ *                 type: string
+ *                 example: ID
+ *               documentation_id:
+ *                 type: string
+ *                 example: "12345678901"
+ *               gender:
+ *                 type: string
+ *                 description: "1 = Masculino, 0 = Femenino"
+ *                 example: "1"
+ *               birth_dt:
+ *                 type: string
+ *                 format: date
+ *                 example: "2004-11-02"
+ *               driver_license_nmbr:
+ *                 type: string
+ *                 example: "123456789012345"
+ *               driver_license_expiration_dt:
+ *                 type: string
+ *                 format: date
+ *                 example: "2027-10-10"
+ *               status_cd:
+ *                 type: string
+ *                 example: ACTIV
+ *               vehicle_id:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       201:
+ *         description: Usuario registrado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Usuario creado correctamente
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Datos inválidos
+ *       409:
+ *         description: Username ya existe
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post("/register/driver", (req, res, next) => {
+  req.body.role = "driver";
   authController.register(req, res, next);
 });
 
