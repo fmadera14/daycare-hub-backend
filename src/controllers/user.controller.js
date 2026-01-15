@@ -10,6 +10,15 @@ export const userController = {
     }
   },
 
+  async getProfile(req, res, next) {
+    try {
+      const user = await userService.findUser(req.user.userId);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async updateProfile(req, res, next) {
     try {
       const updatedUser = await userService.updateProfile(

@@ -73,4 +73,8 @@ export const userService = {
 
     return updatedUser;
   },
+
+  async findUser(userId) {
+    return await userRepository.findById(userId);
+  },
 };
