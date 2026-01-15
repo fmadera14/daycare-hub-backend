@@ -230,6 +230,89 @@ router.post("/register/driver", (req, res, next) => {
 
 /**
  * @swagger
+ * /auth/register/admin:
+ *   post:
+ *     summary: Registrar un nuevo usuario con rol Admin
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - first_nm
+ *               - last_nm
+ *               - documentation_type
+ *               - documentation_id
+ *               - gender
+ *               - birth_dt
+ *               - ocupation_txt
+ *               - nursery_id
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: testusername4
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: "12345678"
+ *               first_nm:
+ *                 type: string
+ *                 example: Test
+ *               last_nm:
+ *                 type: string
+ *                 example: Admin
+ *               documentation_type:
+ *                 type: string
+ *                 example: ID
+ *               documentation_id:
+ *                 type: string
+ *                 example: "12345678901"
+ *               gender:
+ *                 type: string
+ *                 description: "1 = Masculino, 0 = Femenino"
+ *                 example: "1"
+ *               birth_dt:
+ *                 type: string
+ *                 format: date
+ *                 example: "2004-11-02"
+ *               ocupation_txt:
+ *                 type: string
+ *                 example: Director
+ *               nursery_id:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       201:
+ *         description: Usuario registrado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Usuario creado correctamente
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Datos inválidos
+ *       409:
+ *         description: Username ya existe
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post("/register/admin", (req, res, next) => {
+  req.body.role = "admin";
+  authController.register(req, res, next);
+});
+
+/**
+ * @swagger
  * /auth/recovery-password:
  *   post:
  *     summary: Solicitar recuperación de contraseña
