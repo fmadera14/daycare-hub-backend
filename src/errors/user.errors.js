@@ -13,4 +13,9 @@ export const USER_ERRORS = {
     status: 500,
     message: "El usuario no tiene rol",
   },
+
+  USER_ID_REQUIRED: {
+    status: 404,
+    message: "El userId es un campo requerido",
+  },
 };
