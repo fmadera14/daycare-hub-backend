@@ -4,39 +4,92 @@ import { driverRepository } from "../repositories/driver.repository.js";
 import { parentRepository } from "../repositories/parent.repository.js";
 
 export const userService = {
-  async listUsers() {
-    const users = await userRepository.listUsers();
+  async listUsers(filters) {
+    const {
+      // User filters
+      user_id,
+      first_nm,
+      last_nm,
+      documentation_type,
+      documentation_id,
+      gender,
+      birth_dt,
+      active_since,
+      last_login,
+      username,
+      role,
+      // admin filters
+      // driver filters
+      driver_license_nmbr,
+      driver_license_expiration_dt,
+      vehicle_id,
+      // paent filters
+      aproximate_income_amt,
+      children_amt,
+      // driver & parent filters
+      status_cd,
+      // admin & parent filters
+      ocupation_txt,
+    } = filters;
 
-    return Promise.all(
-      users.map(async (user) => {
-        const parentInfo = await parentRepository.findByUserId(user.user_id);
-        const driverInfo = await driverRepository.findByUserId(user.user_id);
-        const adminInfo = await adminRepository.findByUserId(user.user_id);
+    const where = {};
 
-        if (parentInfo)
-          return {
-            ...user,
-            ...parentInfo,
-            role: "parent",
-          };
+    if (user_id) where.user_id = BigInt(user_id);
+    if (username) where.username = { contains: username, mode: "insensitive" };
+    if (first_nm) where.first_nm = { contains: first_nm, mode: "insensitive" };
+    if (last_nm) where.last_nm = { contains: last_nm, mode: "insensitive" };
+    if (documentation_type)
+      where.documentation_type = documentation_type.trim();
+    if (documentation_id) where.documentation_id = documentation_id.trim();
+    if (gender) where.gender = gender;
+    if (birth_dt) where.birth_dt = new Date(birth_dt);
+    if (active_since) where.active_since = new Date(active_since);
+    if (last_login) where.last_login = new Date(last_login);
 
-        if (driverInfo)
-          return {
-            ...user,
-            ...driverInfo,
-            role: "driver",
-          };
+    if (role === "driver") {
+      where.drivers = {
+        some: {
+          ...(driver_license_nmbr && { driver_license_nmbr }),
+          ...(driver_license_expiration_dt && {
+            driver_license_expiration_dt: new Date(
+              driver_license_expiration_dt,
+            ),
+          }),
+          ...(status_cd && { status_cd }),
+          ...(vehicle_id && { vehicle_id: BigInt(vehicle_id) }),
+        },
+      };
+    }
 
-        if (adminInfo)
-          return {
-            ...user,
-            ...adminInfo,
-            role: "admin",
-          };
+    if (role === "parent") {
+      where.parents = {
+        some: {
+          ...(aproximate_income_amt && { aproximate_income_amt }),
+          ...(children_amt && { children_amt }),
+          ...(ocupation_txt && { ocupation_txt }),
+          ...(status_cd && { status_cd }),
+        },
+      };
+    }
 
-        return { ...user, role: "no role" };
-      }),
-    );
+    if (role === "admin") {
+      where.admins = {
+        some: { ...(ocupation_txt && { ocupation_txt }) },
+      };
+    }
+
+    const users = await userRepository.listUsers(where);
+
+    return users.map((user) => ({
+      ...user,
+      role: user.parents.length
+        ? "parent"
+        : user.drivers.length
+          ? "driver"
+          : user.admins.length
+            ? "admin"
+            : "no_role",
+    }));
   },
 
   async updateProfile(userId, data) {

@@ -1,9 +1,10 @@
 import { userService } from "../services/user.service.js";
 
 export const userController = {
-  async listUsers(_, res, next) {
+  async listUsers(req, res, next) {
     try {
-      const users = await userService.listUsers();
+      const filters = req.query;
+      const users = await userService.listUsers(filters);
       res.json(users);
     } catch (error) {
       next(error);

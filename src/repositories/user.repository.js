@@ -41,8 +41,15 @@ export const userRepository = {
     return prismaClient.users.create({ data });
   },
 
-  listUsers() {
-    return prisma.users.findMany();
+  listUsers(where = {}) {
+    return prisma.users.findMany({
+      where,
+      include: {
+        parents: true,
+        drivers: true,
+        admins: true,
+      },
+    });
   },
 
   updatePassword(userId, password) {
