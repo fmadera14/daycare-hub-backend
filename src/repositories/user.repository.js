@@ -71,4 +71,8 @@ export const userRepository = {
       data: allowedFields,
     });
   },
+
+  deleteUser(userId) {
+    return prisma.users.delete({ where: { user_id: userId } });
+  },
 };

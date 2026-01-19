@@ -37,4 +37,6 @@ router.get("/me", authMiddleware, userController.getProfile);
 
 router.put("/", authMiddleware, userController.updateProfile);
 
+router.delete("/:userId", authMiddleware, userController.deleteUser);
+
 export default router;

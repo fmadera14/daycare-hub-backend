@@ -35,7 +35,7 @@ export const userService = {
           };
 
         return { ...user, role: "no role" };
-      })
+      }),
     );
   },
 
@@ -76,5 +76,10 @@ export const userService = {
 
   async findUser(userId) {
     return await userRepository.findById(userId);
+  },
+
+  async deleteUser(userId, role) {
+    if (role !== "admin") throw { code: "INVALID_ROLE" };
+    return await userRepository.deleteUser(userId);
   },
 };
