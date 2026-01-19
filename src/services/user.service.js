@@ -1,7 +1,4 @@
 import { userRepository } from "../repositories/user.repository.js";
-import { adminRepository } from "../repositories/admin.repository.js";
-import { driverRepository } from "../repositories/driver.repository.js";
-import { parentRepository } from "../repositories/parent.repository.js";
 
 export const userService = {
   async listUsers(filters) {
