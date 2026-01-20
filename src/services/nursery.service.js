@@ -57,7 +57,7 @@ export const nurseryServices = {
       throw { code: "NURSERY_NOT_FOUND" };
     }
 
-    if (existingNursery.nursery_id !== nurseryIdInt) {
+    if (existingNursery.user_id !== userIdInt) {
       throw { code: "NURSERY_ACCESS_DENIED" };
     }
 
