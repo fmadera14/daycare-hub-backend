@@ -79,11 +79,11 @@ export const userService = {
 
     return users.map((user) => ({
       ...user,
-      role: user.parents.length
+      role: user.parents
         ? "parent"
-        : user.drivers.length
+        : user.drivers
           ? "driver"
-          : user.admins.length
+          : user.admins
             ? "admin"
             : "no_role",
     }));

@@ -4,4 +4,10 @@ export const nurseryRepository = {
   list() {
     return prisma.nurseries.findMany();
   },
+
+  create(data) {
+    return prisma.nurseries.create({
+      data,
+    });
+  },
 };

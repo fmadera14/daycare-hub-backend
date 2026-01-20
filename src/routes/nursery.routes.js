@@ -6,4 +6,6 @@ const router = Router();
 
 router.get("/", authMiddleware, nurseryController.listNurseries);
 
+router.post("/", authMiddleware, nurseryController.createNursery);
+
 export default router;

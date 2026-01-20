@@ -15,9 +15,9 @@ export const userRepository = {
 
     // inferir rol
     let role = "user";
-    if (user.parents.length) role = "parent";
-    if (user.admins.length) role = "admin";
-    if (user.drivers.length) role = "driver";
+    if (user.parents && user.parents.length) role = "parent";
+    if (user.admins && user.admins.length) role = "admin";
+    if (user.drivers && user.drivers.length) role = "driver";
 
     console.log(user);
 
