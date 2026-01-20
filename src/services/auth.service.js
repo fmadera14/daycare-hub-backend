@@ -62,12 +62,12 @@ export const authService = {
         {
           username: data.username,
           password: hashedPassword,
-          first_nm: data.first_nm,
-          last_nm: data.last_nm,
-          documentation_type: data.documentation_type,
-          documentation_id: data.documentation_id,
+          first_nm: data.firstNm,
+          last_nm: data.lastNm,
+          documentation_type: data.documentationType,
+          documentation_id: data.documentationId,
           gender: data.gender,
-          birth_dt: new Date(data.birth_dt),
+          birth_dt: new Date(data.birthDt),
         },
         tx // 👈 prisma transaction
       );
@@ -78,10 +78,10 @@ export const authService = {
           await parentRepository.create(
             {
               user_id: user.user_id,
-              ocupation_txt: data.ocupation_txt,
-              aproximate_income_amt: data.aproximate_income_amt,
-              children_amt: data.children_amt,
-              status_cd: data.status_cd,
+              ocupation_txt: data.ocupationTxt,
+              aproximate_income_amt: data.aproximateIncomeAmt,
+              children_amt: data.childrenAmt,
+              status_cd: data.statusCd,
             },
             tx
           );
@@ -91,12 +91,12 @@ export const authService = {
           await driverRepository.create(
             {
               user_id: user.user_id,
-              driver_license_nmbr: data.driver_license_nmbr,
+              driver_license_nmbr: data.driverLicenseNmbr,
               driver_license_expiration_dt: new Date(
-                data.driver_license_expiration_dt
+                data.driverLicenseExpirationDt
               ),
-              status_cd: data.status_cd,
-              vehicle_id: data.vehicle_id,
+              status_cd: data.statusCd,
+              vehicle_id: data.vehicleId,
             },
             tx
           );
@@ -106,8 +106,8 @@ export const authService = {
           await adminRepository.create(
             {
               user_id: user.user_id,
-              ocupation_txt: data.ocupation_txt,
-              nursery_id: data.nursery_id,
+              ocupation_txt: data.ocupationTxt,
+              nursery_id: data.nurseryId,
             },
             tx
           );

@@ -1,9 +1,10 @@
 import { userService } from "../services/user.service.js";
 
 export const userController = {
-  async listUsers(_, res, next) {
+  async listUsers(req, res, next) {
     try {
-      const users = await userService.listUsers();
+      const filters = req.query;
+      const users = await userService.listUsers(filters);
       res.json(users);
     } catch (error) {
       next(error);
@@ -23,13 +24,29 @@ export const userController = {
     try {
       const updatedUser = await userService.updateProfile(
         req.user.userId,
-        req.body
+        req.body,
       );
 
       res.status(200).json({
         message: "Usuario editado correctamente",
         updatedUser,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async deleteUser(req, res, next) {
+    try {
+      const { userId } = req.params;
+      const { role } = req.user;
+
+      if (!userId)
+        return res.status(400).json({ message: "userId es requerido" });
+
+      await userService.deleteUser(BigInt(userId), role);
+
+      res.status(200).json({ message: "Usuario eliminado correctamente" });
     } catch (error) {
       next(error);
     }

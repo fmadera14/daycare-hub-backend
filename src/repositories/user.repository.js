@@ -41,8 +41,15 @@ export const userRepository = {
     return prismaClient.users.create({ data });
   },
 
-  listUsers() {
-    return prisma.users.findMany();
+  listUsers(where = {}) {
+    return prisma.users.findMany({
+      where,
+      include: {
+        parents: true,
+        drivers: true,
+        admins: true,
+      },
+    });
   },
 
   updatePassword(userId, password) {
@@ -70,5 +77,9 @@ export const userRepository = {
       where: { user_id: userId },
       data: allowedFields,
     });
+  },
+
+  deleteUser(userId) {
+    return prisma.users.delete({ where: { user_id: userId } });
   },
 };
