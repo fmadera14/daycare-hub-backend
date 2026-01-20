@@ -25,4 +25,17 @@ export const nurseryController = {
       next(error);
     }
   },
+
+  async updateNursery(req, res, next) {
+    try {
+      const nursery = await nurseryServices.updateNursery(
+        req.user.userId,
+        req.params.nurseryId,
+        req.body,
+      );
+      res.json(nursery);
+    } catch (error) {
+      next(error);
+    }
+  },
 };

@@ -28,4 +28,9 @@ export const NURSERY_ERRORS = {
     status: 400,
     message: "openSince invalido",
   },
+
+  NURSERY_ACCESS_DENIED: {
+    status: 400,
+    message: "Acceso denegado al nursery",
+  },
 };
