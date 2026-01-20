@@ -129,4 +129,6 @@ router.post("/", authMiddleware, nurseryController.createNursery);
 
 router.put("/:nurseryId", authMiddleware, nurseryController.updateNursery);
 
+router.delete("/:nurseryId", authMiddleware, nurseryController.deleteNursery);
+
 export default router;

@@ -79,4 +79,21 @@ export const nurseryServices = {
 
     return updatedNursery;
   },
+
+  async deleteNursery(nurseryId, userId) {
+    const userIdInt = BigInt(userId);
+    const nurseryIdInt = BigInt(nurseryId);
+
+    const existingNursery = await nurseryRepository.findById(nurseryIdInt);
+
+    if (!existingNursery) {
+      throw { code: "NURSERY_NOT_FOUND" };
+    }
+
+    if (existingNursery.user_id !== userIdInt) {
+      throw { code: "NURSERY_ACCESS_DENIED" };
+    }
+
+    return await nurseryRepository.delete(nurseryId);
+  },
 };

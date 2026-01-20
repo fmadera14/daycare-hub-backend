@@ -34,4 +34,8 @@ export const nurseryRepository = {
       data: allowedFields,
     });
   },
+
+  delete(nurseryId) {
+    return prisma.nurseries.delete({ where: { nursery_id: nurseryId } });
+  },
 };

@@ -38,4 +38,20 @@ export const nurseryController = {
       next(error);
     }
   },
+
+  async deleteNursery(req, res, next) {
+    try {
+      const { nurseryId } = req.params;
+      const { userId, role } = req.user;
+
+      if (role !== "admin") {
+        throw { code: "INVALID_ROLE" };
+      }
+
+      await nurseryServices.deleteNursery(nurseryId, userId);
+      res.status(200).json({ message: "Nursery eliminado correctamente" });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
