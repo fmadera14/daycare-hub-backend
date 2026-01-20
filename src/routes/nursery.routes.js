@@ -127,8 +127,101 @@ router.get("/", authMiddleware, nurseryController.listNurseries);
  */
 router.post("/", authMiddleware, nurseryController.createNursery);
 
+/**
+ * @swagger
+ * /nurseries/{nurseryId}:
+ *   put:
+ *     summary: Actualizar una nursery
+ *     tags: [Nurseries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: nurseryId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la nursery a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nurseryNm:
+ *                 type: string
+ *                 example: Happy Kids Nursery Updated
+ *               addressTxt:
+ *                 type: string
+ *                 example: Avenida Central #456
+ *               openSince:
+ *                 type: string
+ *                 format: date
+ *                 example: "2021-05-01"
+ *               statusCd:
+ *                 type: string
+ *                 example: INACT
+ *     responses:
+ *       200:
+ *         description: Nursery actualizada correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 nursery_id:
+ *                   type: integer
+ *                   example: 1
+ *                 nursery_nm:
+ *                   type: string
+ *                   example: Happy Kids Nursery Updated
+ *                 address_txt:
+ *                   type: string
+ *                   example: Avenida Central #456
+ *                 open_since_dt:
+ *                   type: string
+ *                   format: date
+ *                   example: "2021-05-01"
+ *                 status_cd:
+ *                   type: string
+ *                   example: INACT
+ *       400:
+ *         description: Datos inválidos
+ *       401:
+ *         description: No autorizado
+ *       404:
+ *         description: Nursery no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.put("/:nurseryId", authMiddleware, nurseryController.updateNursery);
 
+/**
+ * @swagger
+ * /nurseries/{nurseryId}:
+ *   delete:
+ *     summary: Eliminar una nursery
+ *     tags: [Nurseries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: nurseryId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la nursery a eliminar
+ *     responses:
+ *       204:
+ *         description: Nursery eliminada correctamente
+ *       401:
+ *         description: No autorizado
+ *       404:
+ *         description: Nursery no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.delete("/:nurseryId", authMiddleware, nurseryController.deleteNursery);
 
 export default router;
