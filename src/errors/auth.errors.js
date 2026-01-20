@@ -28,4 +28,9 @@ export const AUTH_ERRORS = {
     status: 400,
     message: "Token y nueva contraseña requeridos",
   },
+
+  INVALID_ROLE: {
+    status: 400,
+    message: "Rol invalido para esta función",
+  },
 };

@@ -19,12 +19,12 @@ model aditional_information {
 }
 
 model admins {
-  user_id       BigInt    @unique
-  admin_id      BigInt    @id @default(autoincrement())
-  ocupation_txt String    @db.VarChar(50)
-  nursery_id    BigInt
-  nurseries     nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
-  users         users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user_id       BigInt     @unique
+  admin_id      BigInt     @id @default(autoincrement())
+  ocupation_txt String     @db.VarChar(50)
+  nursery_id    BigInt?
+  nurseries     nurseries? @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
+  users         users      @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model availabilities {
@@ -32,17 +32,6 @@ model availabilities {
   day_available   String   @db.Char(10)
   start_hour      DateTime @db.Time(6)
   end_hour        DateTime @db.Time(6)
-
-  driver_availabilities driver_availabilities[] @ignore
-}
-
-model child_x_nursery {
-  child_id   BigInt
-  nursery_id BigInt
-  children   children  @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
-  nurseries  nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
-
-  @@ignore
 }
 
 model children {
@@ -54,23 +43,9 @@ model children {
   active_since_dt   DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
   children_type_txt String   @db.Char(10)
   status_cd         String   @db.Char(5)
-
-  status status @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
-  events events[]
-  invoices invoices[]
-
-  child_x_nursery child_x_nursery[] @ignore
-  parent_child    parent_child[] @ignore
-  parent_x_plan   parent_x_plan[] @ignore
-}
-
-model driver_availabilities {
-  availability_id BigInt
-  user_id         BigInt
-  availabilities  availabilities @relation(fields: [availability_id], references: [availability_id], onDelete: Cascade)
-  users           users          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-
-  @@ignore
+  status            status   @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  events            events[]
+  invoices          invoices[]
 }
 
 model drivers {
@@ -80,37 +55,31 @@ model drivers {
   driver_license_expiration_dt DateTime @db.Date
   status_cd                    String   @db.Char(5)
   vehicle_id                   BigInt
-
-  status   status   @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
-  users    users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  vehicles vehicles @relation(fields: [vehicle_id], references: [vehicle_id], onDelete: Cascade)
-
-  events        events[]
-  invoices      invoices[]
-  notifications notifications[]
-
-  nursery_driver nursery_driver[] @ignore
+  status                       status   @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  users                        users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  vehicles                     vehicles @relation(fields: [vehicle_id], references: [vehicle_id], onDelete: Cascade)
+  events                       events[]
+  invoices                     invoices[]
+  notifications                notifications[]
 }
 
 model event_types {
-  event_type_id BigInt @id @default(autoincrement())
-  name          String @db.Char(10)
+  event_type_id BigInt   @id @default(autoincrement())
+  name          String   @db.Char(10)
   events        events[]
 }
 
 model events {
-  event_id      BigInt   @id @default(autoincrement())
-  event_dt      DateTime @db.Timestamp(6)
+  event_id      BigInt      @id @default(autoincrement())
+  event_dt      DateTime    @db.Timestamp(6)
   event_type_id BigInt
   child_id      BigInt
   driver_id     BigInt
   nursery_id    BigInt
-
-  children    children    @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
-  drivers     drivers     @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
-  event_types event_types @relation(fields: [event_type_id], references: [event_type_id], onDelete: Cascade)
-  nurseries   nurseries   @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
-
+  children      children    @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
+  drivers       drivers     @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
+  event_types   event_types @relation(fields: [event_type_id], references: [event_type_id], onDelete: Cascade)
+  nurseries     nurseries   @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
   notifications notifications[]
 }
 
@@ -122,27 +91,22 @@ model invoices {
   issue_dt           DateTime @db.Date
   due_dt             DateTime @db.Date
   payment_status_txt String   @db.Char(10)
-
-  nursery_id BigInt
-  driver_id  BigInt
-  parent_id  BigInt
-  child_id   BigInt
-  plan_id    BigInt
-
-  children  children  @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
-  drivers   drivers   @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
-  nurseries nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
-  parents   parents   @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
-  plan      plan      @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade)
-
-  payments payments[]
+  nursery_id         BigInt
+  driver_id          BigInt
+  parent_id          BigInt
+  child_id           BigInt
+  plan_id            BigInt
+  children           children @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
+  drivers            drivers  @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
+  nurseries          nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
+  parents            parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
+  plan               plan     @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade)
+  payments           payments[]
 }
 
 model notification_settings {
   notification_setting_id   BigInt @id @default(autoincrement())
   notification_setting_desc String @db.VarChar(50)
-
-  parent_x_notification_settings parent_x_notification_settings[] @ignore
 }
 
 model notifications {
@@ -154,10 +118,9 @@ model notifications {
   event_id             BigInt
   driver_id            BigInt
   notification_via     String   @db.Char(10)
-
-  drivers drivers @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
-  events  events  @relation(fields: [event_id], references: [event_id], onDelete: Cascade)
-  parents parents @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
+  drivers              drivers  @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
+  events               events   @relation(fields: [event_id], references: [event_id], onDelete: Cascade)
+  parents              parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
 }
 
 model nurseries {
@@ -166,59 +129,12 @@ model nurseries {
   nursery_nm    String   @db.VarChar(50)
   address_txt   String   @db.VarChar(255)
   open_since_dt DateTime @db.Date
-  status_cd     String?  @db.Char(5)
-
-  users  users  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  status status? @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
-
-  admins   admins[]
-  events   events[]
-  invoices invoices[]
-
-  child_x_nursery child_x_nursery[] @ignore
-  nursery_driver  nursery_driver[] @ignore
-}
-
-model nursery_driver {
-  driver_id  BigInt
-  nursery_id BigInt
-
-  drivers   drivers   @relation(fields: [driver_id], references: [driver_id], onDelete: Cascade)
-  nurseries nurseries @relation(fields: [nursery_id], references: [nursery_id], onDelete: Cascade)
-
-  @@ignore
-}
-
-model parent_child {
-  user_id  BigInt
-  child_id BigInt
-
-  users    users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  children children @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
-
-  @@ignore
-}
-
-model parent_x_notification_settings {
-  parent_id               BigInt
-  notification_setting_id BigInt
-
-  parents                 parents                 @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
-  notification_settings   notification_settings   @relation(fields: [notification_setting_id], references: [notification_setting_id], onDelete: Cascade)
-
-  @@ignore
-}
-
-model parent_x_plan {
-  parent_id BigInt
-  plan_id   BigInt
-  child_id  BigInt
-
-  parents  parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
-  plan     plan     @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade)
-  children children @relation(fields: [child_id], references: [child_id], onDelete: Cascade)
-
-  @@ignore
+  status_cd     String?
+  admins        admins[]
+  events        events[]
+  invoices      invoices[]
+  status        status?  @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  users         users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model parents {
@@ -228,16 +144,11 @@ model parents {
   aproximate_income_amt Decimal  @db.Decimal(10, 2)
   children_amt          Int      @default(1)
   status_cd             String   @db.Char(5)
-
-  users  users  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  status status @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
-
-  invoices      invoices[]
-  notifications notifications[]
-  payments      payments[]
-
-  parent_x_notification_settings parent_x_notification_settings[] @ignore
-  parent_x_plan                  parent_x_plan[] @ignore
+  invoices              invoices[]
+  notifications         notifications[]
+  status                status   @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
+  users                 users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  payments              payments[]
 }
 
 model payments {
@@ -247,9 +158,8 @@ model payments {
   payment_status_txt String   @db.Char(10)
   parent_id          BigInt
   invoice_id         BigInt
-
-  parents  parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
-  invoices invoices @relation(fields: [invoice_id], references: [invoice_id], onDelete: Cascade)
+  invoices           invoices @relation(fields: [invoice_id], references: [invoice_id], onDelete: Cascade)
+  parents            parents  @relation(fields: [parent_id], references: [parent_id], onDelete: Cascade)
 }
 
 model plan {
@@ -259,12 +169,9 @@ model plan {
   late_fee          Decimal  @db.Decimal(10, 2)
   plan_requisite_id BigInt
   status_cd         String   @db.Char(5)
-
-  plan_requisite plan_requisite @relation(fields: [plan_requisite_id], references: [plan_requisite_id], onDelete: Cascade)
-  status         status         @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
-
-  invoices      invoices[]
-  parent_x_plan parent_x_plan[] @ignore
+  invoices          invoices[]
+  plan_requisite    plan_requisite @relation(fields: [plan_requisite_id], references: [plan_requisite_id], onDelete: Cascade)
+  status            status  @relation(fields: [status_cd], references: [status_cd], onDelete: Cascade)
 }
 
 model plan_requisite {
@@ -276,52 +183,85 @@ model plan_requisite {
 model status {
   status_cd   String @id @db.Char(5)
   status_desc String @db.Char(10)
-
-  children  children[]
-  drivers   drivers[]
-  nurseries nurseries[]
-  parents   parents[]
-  plan      plan[]
+  children    children[]
+  drivers     drivers[]
+  nurseries   nurseries[]
+  parents     parents[]
+  plan        plan[]
 }
 
 model users {
-  user_id            BigInt @id @default(autoincrement())
-  first_nm           String @db.VarChar(50)
-  last_nm            String @db.VarChar(50)
-  documentation_type String @db.Char(5)
-  documentation_id   String @db.Char(15)
-  gender             String @db.Bit(1)
-  birth_dt           DateTime @db.Date
-  active_since       DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
-  last_login         DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
-  password           String @db.VarChar
-  username           String @unique @db.VarChar
-
+  user_id               BigInt   @id @default(autoincrement())
+  first_nm              String   @db.VarChar(50)
+  last_nm               String   @db.VarChar(50)
+  documentation_type    String   @db.Char(5)
+  documentation_id      String   @db.Char(15)
+  gender                String   @db.Bit(1)
+  birth_dt              DateTime @db.Date
+  active_since          DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  last_login            DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+  password              String   @db.VarChar
+  username              String   @unique @db.VarChar
   aditional_information aditional_information?
-  admins    admins[]
-  drivers   drivers[]
-  nurseries nurseries[]
-  parents   parents[]
-
-  driver_availabilities driver_availabilities[] @ignore
-  parent_child          parent_child[] @ignore
+  admins                admins?
+  drivers               drivers?
+  parents               parents?
+  nurseries             nurseries[]
 }
 
 model vehicle_types {
-  vehicle_type_id BigInt @id @default(autoincrement())
-  type_name       String @db.Char(10)
+  vehicle_type_id BigInt   @id @default(autoincrement())
+  type_name       String   @db.Char(10)
   vehicles        vehicles[]
 }
 
 model vehicles {
-  vehicle_id        BigInt @id @default(autoincrement())
-  vehicle_brand     String @db.VarChar(50)
-  vehicle_nm        String @db.VarChar(50)
-  year              String @db.Char(4)
-  color             String @db.Char(10)
-  registration_nmbr String @db.Char(15)
+  vehicle_id        BigInt   @id @default(autoincrement())
+  vehicle_brand     String   @db.VarChar(50)
+  vehicle_nm        String   @db.VarChar(50)
+  year              String   @db.Char(4)
+  color             String   @db.Char(10)
+  registration_nmbr String   @db.Char(15)
   vehicle_type_id   BigInt
+  drivers           drivers[]
+  vehicle_types     vehicle_types @relation(fields: [vehicle_type_id], references: [vehicle_type_id], onDelete: Cascade)
+}
 
-  vehicle_types vehicle_types @relation(fields: [vehicle_type_id], references: [vehicle_type_id], onDelete: Cascade)
-  drivers       drivers[]
+/* ---------- TABLAS PUENTE IGNORADAS ---------- */
+
+model child_x_nursery {
+  child_id   BigInt
+  nursery_id BigInt
+  @@ignore
+}
+
+model driver_availabilities {
+  availability_id BigInt
+  user_id         BigInt
+  @@ignore
+}
+
+model nursery_driver {
+  driver_id  BigInt
+  nursery_id BigInt
+  @@ignore
+}
+
+model parent_child {
+  user_id  BigInt
+  child_id BigInt
+  @@ignore
+}
+
+model parent_x_notification_settings {
+  parent_id               BigInt
+  notification_setting_id BigInt
+  @@ignore
+}
+
+model parent_x_plan {
+  parent_id BigInt
+  plan_id   BigInt
+  child_id  BigInt
+  @@ignore
 }
