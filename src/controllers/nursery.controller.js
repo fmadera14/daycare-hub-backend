@@ -6,7 +6,9 @@ export const nurseryController = {
       if (req.user.role !== "admin") {
         throw { code: "INVALID_ROLE" };
       }
-      const nurseries = await nurseryServices.listNurseries();
+      const filters = req.query;
+      const userId = req.user.userId;
+      const nurseries = await nurseryServices.listNurseries(filters, userId);
       res.json(nurseries);
     } catch (error) {
       next(error);

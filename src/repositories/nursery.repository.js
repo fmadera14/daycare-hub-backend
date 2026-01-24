@@ -1,8 +1,8 @@
 import { prisma } from "../config/prisma.js";
 
 export const nurseryRepository = {
-  list() {
-    return prisma.nurseries.findMany();
+  list(where = {}) {
+    return prisma.nurseries.findMany({ where });
   },
 
   create(data) {

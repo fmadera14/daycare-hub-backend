@@ -1,8 +1,18 @@
 import { nurseryRepository } from "../repositories/nursery.repository.js";
 
 export const nurseryServices = {
-  async listNurseries() {
-    return await nurseryRepository.list();
+  async listNurseries(filters, userId) {
+    const { nurseryNm, addressTxt, openSinceDt, statusCd } = filters;
+
+    const where = {};
+
+    if (userId) where.user_id = BigInt(userId);
+    if (nurseryNm) where.nursery_nm = nurseryNm;
+    if (addressTxt) where.address_txt = addressTxt;
+    if (openSinceDt) where.open_since = new Date(openSinceDt);
+    if (statusCd) where.status_cd = statusCd;
+
+    return await nurseryRepository.list(where);
   },
 
   async createNursery(data) {
