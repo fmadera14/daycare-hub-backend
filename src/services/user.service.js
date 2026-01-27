@@ -4,56 +4,53 @@ export const userService = {
   async listUsers(filters) {
     const {
       // User filters
-      user_id,
-      first_nm,
-      last_nm,
-      documentation_type,
-      documentation_id,
+      userId,
+      firstNm,
+      lastNm,
+      documentationType,
+      documentationId,
       gender,
-      birth_dt,
-      active_since,
-      last_login,
+      birthDt,
+      activeSince,
+      lastLogin,
       username,
       role,
       // admin filters
       // driver filters
-      driver_license_nmbr,
-      driver_license_expiration_dt,
-      vehicle_id,
+      driverLicenseNmbr,
+      driverLicenseExpirationDt,
+      vehicleId,
       // paent filters
-      aproximate_income_amt,
-      children_amt,
+      aproximateIncomeAmt,
+      childrenAmt,
       // driver & parent filters
-      status_cd,
+      statusCd,
       // admin & parent filters
-      ocupation_txt,
+      ocupationTxt,
     } = filters;
 
     const where = {};
 
-    if (user_id) where.user_id = BigInt(user_id);
+    if (userId) where.user_id = BigInt(userId);
     if (username) where.username = { contains: username, mode: "insensitive" };
-    if (first_nm) where.first_nm = { contains: first_nm, mode: "insensitive" };
-    if (last_nm) where.last_nm = { contains: last_nm, mode: "insensitive" };
-    if (documentation_type)
-      where.documentation_type = documentation_type.trim();
-    if (documentation_id) where.documentation_id = documentation_id.trim();
+    if (firstNm) where.first_nm = { contains: firstNm, mode: "insensitive" };
+    if (lastNm) where.last_nm = { contains: lastNm, mode: "insensitive" };
+    if (documentationType) where.documentation_type = documentationType.trim();
+    if (documentationId) where.documentation_id = documentationId.trim();
     if (gender) where.gender = gender;
-    if (birth_dt) where.birth_dt = new Date(birth_dt);
-    if (active_since) where.active_since = new Date(active_since);
-    if (last_login) where.last_login = new Date(last_login);
+    if (birthDt) where.birth_dt = new Date(birthDt);
+    if (activeSince) where.active_since = new Date(activeSince);
+    if (lastLogin) where.last_login = new Date(lastLogin);
 
     if (role === "driver") {
       where.drivers = {
         some: {
-          ...(driver_license_nmbr && { driver_license_nmbr }),
-          ...(driver_license_expiration_dt && {
-            driver_license_expiration_dt: new Date(
-              driver_license_expiration_dt,
-            ),
+          ...(driverLicenseNmbr && { driver_license_nmbr: driverLicenseNmbr }),
+          ...(driverLicenseExpirationDt && {
+            driver_license_expiration_dt: new Date(driverLicenseExpirationDt),
           }),
-          ...(status_cd && { status_cd }),
-          ...(vehicle_id && { vehicle_id: BigInt(vehicle_id) }),
+          ...(statusCd && { status_cd: statusCd }),
+          ...(vehicleId && { vehicle_id: BigInt(vehicleId) }),
         },
       };
     }
@@ -61,17 +58,19 @@ export const userService = {
     if (role === "parent") {
       where.parents = {
         some: {
-          ...(aproximate_income_amt && { aproximate_income_amt }),
-          ...(children_amt && { children_amt }),
-          ...(ocupation_txt && { ocupation_txt }),
-          ...(status_cd && { status_cd }),
+          ...(aproximateIncomeAmt && {
+            aproximate_income_amt: aproximateIncomeAmt,
+          }),
+          ...(childrenAmt && { children_amt: childrenAmt }),
+          ...(ocupationTxt && { ocupation_txt: ocupationTxt }),
+          ...(statusCd && { status_cd: statusCd }),
         },
       };
     }
 
     if (role === "admin") {
       where.admins = {
-        some: { ...(ocupation_txt && { ocupation_txt }) },
+        some: { ...(ocupationTxt && { ocupation_txt: ocupationTxt }) },
       };
     }
 
